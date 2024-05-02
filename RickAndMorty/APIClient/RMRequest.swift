@@ -22,7 +22,7 @@ final class RMRequest{
     /// Desired Endpoints
     private let endPoint: RMEndpoint
     /// Path Components for API, if any
-    private let pathComponents: Set<String>
+    private let pathComponents: [String]
     /// query parameters for API, if any
     private let queryParameters: [URLQueryItem]
     
@@ -56,7 +56,7 @@ final class RMRequest{
     }
     
     /// Desired HTTP method
-    public let httpRequest = "GET"
+    public let httpMethod = "GET"
     
     //MARK: - PUBLIC
     
@@ -65,9 +65,13 @@ final class RMRequest{
     ///   - endPoint: Target Endpoint
     ///   - pathComponents: Collection of path components
     ///   - queryParameters: Collection of query parameters
-   public init(endPoint: RMEndpoint, pathComponents: Set<String> = [], queryParameters: [URLQueryItem] = []) {
+   public init(endPoint: RMEndpoint, pathComponents: [String] = [], queryParameters: [URLQueryItem] = []) {
         self.endPoint = endPoint
         self.pathComponents = pathComponents
         self.queryParameters = queryParameters
     }
+}
+
+extension RMRequest{
+    static let listCharacters = RMRequest(endPoint: .character)
 }
