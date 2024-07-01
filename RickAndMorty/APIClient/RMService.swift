@@ -13,7 +13,7 @@ final class RMService{
     static let shared = RMService()
     
     ///privatized constructor
-    private init() {}
+    private init() {} //everyone is forced to use this shared variable
     
     enum rmServiceError: Error{
         case failedToCreateRequest
@@ -48,6 +48,9 @@ final class RMService{
     
     //MARK: - PRIVATE
     
+    /// this function is getting request from RMRequest and converting it to URLRequest
+    /// - Parameter rmRequest: taking url from rmRequest
+    /// - Returns: giving it into URL form
     private func request(from rmRequest: RMRequest)->URLRequest?{
         guard let url = rmRequest.url else {return nil}
         var request = URLRequest(url: url)
