@@ -85,7 +85,7 @@ final class RMCharacterListViewViewModel: NSObject{
                 strongSelf.characters.append(contentsOf: moreResult)
                 DispatchQueue.main.async{
                     strongSelf.delegate?.didLoadMoreCharacters(with: indexPathToAdd)
-                    //strongSelf.isdLoadingMoreCharacters = false
+                    strongSelf.isdLoadingMoreCharacters = false
                 }
             case .failure(let error):
                 print("Error to fetch additional characters \(error)")
