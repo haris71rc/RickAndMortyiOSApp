@@ -5,7 +5,7 @@
 //  Created by Mohd Haris on 09/07/24.
 //
 
-import Foundation
+import UIKit
 
 protocol RMEpisodeDataRender{
     var name: String { get }
@@ -13,12 +13,14 @@ protocol RMEpisodeDataRender{
     var episode: String { get }
 }
 
-final class RMCharacterEpisodeCollectionViewCellViewModel{
+final class RMCharacterEpisodeCollectionViewCellViewModel:Hashable,Equatable{
+    
+    public let borderColor: UIColor
     private let episodeDataURL: URL?
     private var isFetching = false
     private var dataBlock: ((RMEpisodeDataRender)->Void)?
     private var episodes: RMEpisode?{
-        didSet{ //disSet is calle as soon as something is assigned to episode variable
+        didSet{ //disSet is called as soon as something is assigned to episode variable
             guard let model = episodes else{
                 return
             }
@@ -27,8 +29,9 @@ final class RMCharacterEpisodeCollectionViewCellViewModel{
     }
     
     //MARK: - Init
-    init(episodeDataURL: URL?){
+    init(episodeDataURL: URL?,borderColor: UIColor = .systemBlue){
         self.episodeDataURL=episodeDataURL
+        self.borderColor = borderColor
     }
     
     //MARK: - Public
@@ -57,5 +60,12 @@ final class RMCharacterEpisodeCollectionViewCellViewModel{
                 print(String(describing:"Failed to get episodes details in character detail view \(failure)"))
             }
         }
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.episodeDataURL?.absoluteString ?? "")
+    }
+    static func == (lhs: RMCharacterEpisodeCollectionViewCellViewModel, rhs: RMCharacterEpisodeCollectionViewCellViewModel) -> Bool {
+        return lhs.hashValue == rhs.hashValue
     }
 }

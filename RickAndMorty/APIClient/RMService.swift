@@ -12,6 +12,8 @@ final class RMService{
     /// Shared singleton instance
     static let shared = RMService()
     
+    private let cacheManager = RMAPICacheManager()
+    
     ///privatized constructor
     private init() {} //everyone is forced to use this shared variable
     
@@ -26,16 +28,32 @@ final class RMService{
     ///   - completion: callback with data or error
     ///   - type: Type of object we expect to get back
     public func execute<T: Codable>(_ request: RMRequest,expecting type: T.Type, completion: @escaping(Result<T,Error>)->Void){
+        
+        if let cacheData = cacheManager.cacheResponse(for: request.endPoint, url: request.url){
+            do{
+                let result = try JSONDecoder().decode(type.self, from: cacheData)
+                completion(.success(result))
+            }
+            catch{
+                completion(.failure(error))
+            }
+            return
+        }
+        
         guard let urlRequest = self.request(from: request) else{
             completion(.failure(rmServiceError.failedToCreateRequest))
             return
         }
-        let task = URLSession.shared.dataTask(with: urlRequest) { data, _, error in
+        let task = URLSession.shared.dataTask(with: urlRequest) { [weak self] data, _, error in
             guard let data = data , error == nil else {
                 completion(.failure(error ?? rmServiceError.failedToGetData))
                 return}
             do{
                 let result = try JSONDecoder().decode(type.self, from: data)
+                
+                self?.cacheManager.setCache(for: request.endPoint,
+                                            url: request.url,
+                                            data: data)
                 completion(.success(result))
             }
             catch{

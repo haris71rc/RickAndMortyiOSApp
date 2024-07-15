@@ -23,7 +23,7 @@ final class RMCharacterInfoCollectionViewCellViewModel{
         outputFormat.dateFormat = "yyyy-MM-dd"
         outputFormat.locale = .current
         outputFormat.dateStyle = .medium
-        outputFormat.timeStyle = .short
+        //outputFormat.timeStyle = .short
         return outputFormat
     }()
     
