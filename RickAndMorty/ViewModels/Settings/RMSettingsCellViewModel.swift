@@ -7,14 +7,16 @@
 
 import UIKit
 
-struct RMSettingsCellViewModel:Identifiable,Hashable{
+struct RMSettingsCellViewModel:Identifiable{
     let id = UUID() // creates a unique ID for each of the instances of the view model we create
     
-    private let type: RMSettingsOption
+    public let type: RMSettingsOption
+    public let onTapHandler: (RMSettingsOption)->Void
     
     //MARK: - Init
-    init(type: RMSettingsOption){
+    init(type: RMSettingsOption, onTapHandler: @escaping(RMSettingsOption)->Void){
         self.type = type
+        self.onTapHandler = onTapHandler
     }
     
     //MARK: - Public
