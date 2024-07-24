@@ -9,11 +9,17 @@ import UIKit
 
 protocol RMSearchInputViewDelegate: AnyObject{
     func rmSearchInputView(_ inputView: RMSearchInputView,didSelectOption option: RMSearchInputViewViewModel.dynamicOption)
+    
+    func rmSearchInputView(_ inputView: RMSearchInputView,didChangeSearchText text: String)
+    
+    func rmSearchInputViewDidTapSearchKeyboardButton(_ inputView: RMSearchInputView)
+
 }
 
 class RMSearchInputView: UIView {
     
     weak var delegate:RMSearchInputViewDelegate?
+    private var stackView:UIStackView?
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()
@@ -37,6 +43,7 @@ class RMSearchInputView: UIView {
         translatesAutoresizingMaskIntoConstraints = false
         addSubviews(searchBar)
         addConstraints()
+        searchBar.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -73,6 +80,7 @@ class RMSearchInputView: UIView {
     private func createOptionSelectionView(options: [RMSearchInputViewViewModel.dynamicOption]){
         
         let stackView =  createOptionStackView()
+        self.stackView = stackView
         
         for x in 0..<options.count {
             let option = options[x]
@@ -111,5 +119,32 @@ class RMSearchInputView: UIView {
     }
     public func presentKeyboard(){
         searchBar.becomeFirstResponder()
+    }
+    
+    public func update(option: RMSearchInputViewViewModel.dynamicOption, value:String){
+        guard let buttons = stackView?.arrangedSubviews as? [UIButton],
+              let allOptions = viewModel?.options,
+              let index = allOptions.firstIndex(of: option) else{
+            return
+        }
+        let button: UIButton = buttons[index]
+        button.setAttributedTitle(NSAttributedString(string: value.uppercased(),attributes: [
+            .font:UIFont.systemFont(ofSize: 18,weight: .medium),.foregroundColor:UIColor.link
+        ]),
+                                  for: .normal)
+    }
+}
+
+//MARK: - UISearchBar Delegate
+
+extension RMSearchInputView: UISearchBarDelegate{
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        //notify delegate of change of text basically
+        delegate?.rmSearchInputView(self, didChangeSearchText: searchText)
+    }
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //notify delegate of that search button of keyboard is pressed
+        searchBar.resignFirstResponder()
+        delegate?.rmSearchInputViewDidTapSearchKeyboardButton(self)
     }
 }

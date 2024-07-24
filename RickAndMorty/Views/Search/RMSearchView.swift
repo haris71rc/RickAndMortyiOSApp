@@ -29,6 +29,14 @@ final class RMSearchView: UIView {
         addConstraint()
         searchInputView.configure(with: .init(type: viewModel.config.type))
         searchInputView.delegate = self
+        
+        self.viewModel.registerOptionChangeBlock { tuple in
+            // tuple: option | value
+            self.searchInputView.update(option: tuple.0, value: tuple.1)
+        }
+        viewModel.registerSearchResultHandler {results in
+            print(results)
+        }
     }
     
     required init?(coder: NSCoder) {
@@ -75,6 +83,14 @@ extension RMSearchView:UICollectionViewDelegate,UICollectionViewDataSource{
 
 //MARK: - searchInputView Delegate Implementation
 extension RMSearchView: RMSearchInputViewDelegate{
+    func rmSearchInputView(_ inputView: RMSearchInputView, didChangeSearchText text: String) {
+        viewModel.set(query: text)
+    }
+    
+    func rmSearchInputViewDidTapSearchKeyboardButton(_ inputView: RMSearchInputView) {
+        viewModel.executeSearch()
+    }
+    
     func rmSearchInputView(_ inputView: RMSearchInputView, didSelectOption option: RMSearchInputViewViewModel.dynamicOption) {
         delegate?.rmSearchView(self, didSelectOption: option)
     }
