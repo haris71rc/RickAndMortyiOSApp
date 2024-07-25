@@ -15,6 +15,8 @@ final class RMSearchViewViewModel{
     
     private var searchText = ""
     private var searchResultHandler : ((RMSearchResultViewModel)->Void)?
+    private var noResultsHandler : (()->Void)?
+    private var searchResultModel: Codable?
     
     //MARK: - Init
     init(config: RMSearchViewController.Config){
@@ -26,6 +28,10 @@ final class RMSearchViewViewModel{
     public func registerSearchResultHandler(_ block: @escaping(RMSearchResultViewModel)->Void){
         self.searchResultHandler = block
     }
+    public func registerNoResultsHandler(_ block: @escaping()->Void){
+        self.noResultsHandler = block
+    }
+    
     public func set(query text: String){
         self.searchText = text
     }
@@ -76,8 +82,8 @@ final class RMSearchViewViewModel{
             switch result {
             case .success(let model):
                 self?.processSearchResults(model: model)
-            case .failure(let failure):
-                print("Failed to get results")
+            case .failure:
+                self?.handleNoResults()
             }
         }
     }
@@ -85,7 +91,6 @@ final class RMSearchViewViewModel{
     private func processSearchResults(model: Codable){
         var resultsVM: RMSearchResultViewModel?
         if let characterResult = model as? RMGetAllCharactersResponse{
-            print(characterResult.results.count)
             resultsVM = .characters(characterResult.results.compactMap({
                 return RMCharacterCollectionViewCellViewModel(characterName: $0.name,
                                                               characterStatus: $0.status,
@@ -93,23 +98,33 @@ final class RMSearchViewViewModel{
             }))
         }
         else if let episodeResult = model as? RMGetAllEpisodesResponse{
-            print(episodeResult.results.count)
             resultsVM = .episodes(episodeResult.results.compactMap({
                 return RMCharacterEpisodeCollectionViewCellViewModel(episodeDataURL: URL(string:$0.url))
             }))
         }
         else if let locationResult = model as? RMGetAllLocationsResponse{
-            print(locationResult.results.count)
             resultsVM = .locations(locationResult.results.compactMap({
                 return RMLocationTableViewCellViewModel(location: $0)
             }))
         }
         if let results = resultsVM{
+            self.searchResultModel = model
             self.searchResultHandler?(results)
         }
         else{
             //No matching results means show -: NO result view
-            
+            handleNoResults()
         }
+    }
+    
+    private func handleNoResults(){
+        noResultsHandler?()
+    }
+    
+    public func locationSearchResult(at index: Int)->RMLocation?{
+        guard let searchModel = searchResultModel as? RMGetAllLocationsResponse else{
+            return nil
+        }
+        return searchModel.results[index]
     }
 }
