@@ -131,8 +131,16 @@ extension RMCharacterListViewViewModel: UICollectionViewDataSource,UICollectionV
         return CGSize(width: collectionView.frame.width , height: 100)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let bounds = UIScreen.main.bounds
-        let width = (bounds.width-30)/2
+        let isIphone = UIDevice.current.userInterfaceIdiom == .phone
+        let bounds = collectionView.bounds
+        let width : CGFloat
+        if isIphone{
+            width = (bounds.width-30)/2
+        }
+        else{
+            //Mac | Ipad
+            width = (bounds.width-50)/4
+        }
         
         return CGSize(
             width: width,

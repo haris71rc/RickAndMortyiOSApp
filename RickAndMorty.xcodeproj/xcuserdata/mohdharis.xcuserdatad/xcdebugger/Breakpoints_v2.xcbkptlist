@@ -27,9 +27,9 @@
             filePath = "RickAndMorty/Views/Locations/RMLocationView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "tableView(_:didSelectRowAt:)"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "scrollViewDidScroll(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -75,8 +75,8 @@
             filePath = "RickAndMorty/Views/Search/RMSearchResultsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "85"
+            endingLineNumber = "85"
             landmarkName = "setUpTableView(viewModels:)"
             landmarkType = "7">
          </BreakpointContent>
