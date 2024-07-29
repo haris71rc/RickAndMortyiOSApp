@@ -46,6 +46,10 @@ final class RMSearchViewViewModel{
     }
     
     public func executeSearch(){
+        
+        guard !searchText.trimmingCharacters(in: .whitespaces).isEmpty else{
+            return
+        }
         //Send request on the basis of filters
         var querypara : [URLQueryItem] = [URLQueryItem(name: "name", value: searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))]
         
@@ -126,5 +130,19 @@ final class RMSearchViewViewModel{
             return nil
         }
         return searchModel.results[index]
+    }
+    
+    public func characterSearchResult(at index:Int)->RMCharacter?{
+        guard let characterModel = searchResultModel as? RMGetAllCharactersResponse else{
+            return nil
+        }
+        return characterModel.results[index]
+    }
+    
+    public func episodeSearchResult(at index:Int)->RMEpisode?{
+        guard let episodeModel = searchResultModel as? RMGetAllEpisodesResponse else{
+            return nil
+        }
+        return episodeModel.results[index]
     }
 }
