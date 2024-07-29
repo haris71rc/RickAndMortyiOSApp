@@ -137,10 +137,9 @@ extension RMLocationView: UIScrollViewDelegate{
                 let totalScrollViewFixedHeight = scrollView.frame.size.height
                 
                 if(offset >= (totalContentHeight-totalScrollViewFixedHeight-120)){
-                    DispatchQueue.main.async{
                         self?.showLoadingIndicator()
-                    }
-                    viewModel.fetchAdditionalLocations()
+                        viewModel.fetchAdditionalLocations()
+                    
                 }
                 t.invalidate()
         }
